@@ -5,5 +5,5 @@ This technique exploits the /etc/ld.so.preload file on Linux systems to achieve 
 
 When an application starts, the dynamic linker checks /etc/ld.so.preload and loads any libraries listed there, enabling custom code to run with the privileges of the calling process. Because /etc/ld.so.preload applies system-wide and requires root permissions to modify, it is often used by attackers with escalated privileges to maintain control over a compromised system. This can be leveraged to execute logging, monitoring, or malicious activities silently across reboots and user sessions.
 <p align="center">
-  <img src="Video/vid.gif" alt="Master">
+  <img src="Video/etcldso.gif" alt="Master">
 </p>
