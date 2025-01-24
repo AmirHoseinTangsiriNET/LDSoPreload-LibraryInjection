@@ -7,5 +7,4 @@ When an application starts, the dynamic linker checks /etc/ld.so.preload and loa
 <p align="center">
   <img src="Video/etcldso.gif" alt="Master">
 </p>
-[![Test Video]
-(https://raw.githubusercontent.com/AmirHoseinTangsiriNET/Library-Injection-via-etc-ld.so.preload/main/assets/etcldso.mp4)
+[![Test Video] (https://raw.githubusercontent.com/AmirHoseinTangsiriNET/Library-Injection-via-etc-ld.so.preload/main/assets/etcldso.mp4)
