@@ -11,7 +11,7 @@ Let's walk through the detailed steps of exploiting this technique. I'll break i
 ### Step 1: Understanding the Exploit
 Objective: Gain persistence on a Linux system by injecting a malicious shared library through the /etc/ld.so.preload mechanism.
 Mechanism: The dynamic linker (ld.so) checks the /etc/ld.so.preload file on system startup and loads any libraries listed there before loading the standard libraries. If an attacker can modify this file, they can insert a malicious library that runs arbitrary code when any process starts.
-Step 2: Creating a Malicious Shared Library
+### Step 2: Creating a Malicious Shared Library
 First, you need to create a custom shared library that will be injected when a process starts. This library can contain malicious code, such as a reverse shell, a keylogger, or other persistent malware.
 
 ### Step 2: Creating a Malicious Shared Library
@@ -48,7 +48,7 @@ This creates the reverse_shell.so shared library, which will execute a reverse s
 ### Step 3: Modifying /etc/ld.so.preload
 Once the malicious shared library is compiled, the next step is to modify the /etc/ld.so.preload file to ensure that the malicious library is loaded system-wide whenever a process starts.
 
-1. Check if /etc/ld.so.preload exists:
+#### 1. Check if /etc/ld.so.preload exists:
 
 If the file already exists, you'll append your library path to it. If it doesn't exist, you’ll need to create it.
 
