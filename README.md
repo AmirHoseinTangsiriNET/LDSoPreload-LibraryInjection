@@ -66,11 +66,11 @@ Once the malicious shared library is compiled, the next step is to modify the /e
 
 If the file already exists, you'll append your library path to it. If it doesn't exist, you’ll need to create it.
 
-2. Gain root access:
+#### 2. Gain root access:
 
 Since modifying /etc/ld.so.preload requires root privileges, you’ll need to escalate privileges to root if not already done. This could be through an existing vulnerability, misconfiguration, or a privilege escalation exploit.
 
-3. Modify /etc/ld.so.preload:
+#### 3. Modify /etc/ld.so.preload:
 
 Assuming you've gained root access, you can modify /etc/ld.so.preload by appending the path of the malicious shared library:
 
@@ -79,14 +79,16 @@ Make sure to replace /path/to/reverse_shell.so with the actual path to your mali
 
 ### Step 4: Test the Exploit
 At this point, the malicious library is set to be loaded every time any dynamically linked process starts. To test the exploit, simply start a new process. For example, try running:
-
+```bash
 ls
+```
 This will run the ls command, but because of the /etc/ld.so.preload file, the reverse shell library will be loaded first, and it will attempt to connect to the attacker's machine.
 
 ### Step 5: Set up Listener on Attacker's Machine
 To receive the reverse shell, you need to set up a listener on the attacker's machine using Netcat (nc). On your attacker's machine:
-
+```bash
 nc -lvp 4444
+```
 Make sure that port 4444 (or whatever port you specified) is open and listening for connections.
 
 ### Step 6: Persistent Execution
@@ -96,11 +98,13 @@ Since /etc/ld.so.preload is applied system-wide, this technique will survive reb
 To remove the malicious payload, you would simply need to:
 
 Remove the entry from /etc/ld.so.preload:
-
+```bash
 sed -i '/reverse_shell.so/d' /etc/ld.so.preload
+```
 Delete the malicious shared library:
-
+```bash
 rm /path/to/reverse_shell.so
+```
 Restart the system or relaunch processes to ensure the payload is no longer injected.
 
 # Additional Considerations and Mitigation
@@ -114,4 +118,3 @@ Monitoring:
 
 Set up monitoring for system changes to /etc/ld.so.preload to detect tampering.
 Monitor network activity, particularly outgoing connections to detect suspicious reverse shell connections.
-
