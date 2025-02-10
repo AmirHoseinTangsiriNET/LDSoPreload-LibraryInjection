@@ -40,7 +40,9 @@ Steps to compile the malicious shared library:
 
 Save the above code into a file called reverse_shell.c.
 Compile it into a shared library:
+```bash
 gcc -shared -fPIC -o reverse_shell.so reverse_shell.c
+```
 This creates the reverse_shell.so shared library, which will execute a reverse shell to the attacker's IP and port when any process is started.
 
 ### Step 3: Modifying /etc/ld.so.preload
