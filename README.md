@@ -1,23 +1,38 @@
-# Library Injection via ld.so.preload File 
-A technique that uses /etc/ld.so.preload to inject custom libraries for code execution and persistence
+# Library Injection via `/etc/ld.so.preload` File
+
+This technique exploits the `/etc/ld.so.preload` file on Linux systems to inject custom libraries for code execution and persistence across reboots.
+
+---
+
 ### Description
-This technique exploits the /etc/ld.so.preload file on Linux systems to achieve system-wide persistence by injecting a shared library that loads with every dynamically linked process. By adding a custom library path to /etc/ld.so.preload, attackers can execute arbitrary code whenever any new process is started. This technique leverages the dynamic linker (ld.so) to preload a specified library before standard libraries, making it effective for both privilege escalation and stealth operations.
 
-When an application starts, the dynamic linker checks /etc/ld.so.preload and loads any libraries listed there, enabling custom code to run with the privileges of the calling process. Because /etc/ld.so.preload applies system-wide and requires root permissions to modify, it is often used by attackers with escalated privileges to maintain control over a compromised system. This can be leveraged to execute logging, monitoring, or malicious activities silently across reboots and user sessions.
+This attack leverages the `/etc/ld.so.preload` file to inject a shared library that gets loaded with every dynamically linked process. By adding a custom library path to `/etc/ld.so.preload`, an attacker can execute arbitrary code whenever any new process is started.
 
-## Detailed PoC (Proof of Concept)
-Let's walk through the detailed steps of exploiting this technique. I'll break it down into phases: preparation, library creation, injection into /etc/ld.so.preload, and execution.
+- **How it works**: The dynamic linker (`ld.so`) checks `/etc/ld.so.preload` during system startup and loads any libraries listed there before the standard libraries. This allows attackers to run malicious code with the privileges of the calling process.
+
+- **Impact**: Attackers with escalated privileges can use this method for privilege escalation, data exfiltration, or to silently execute malicious activities. This persistence method survives system reboots and user logins as long as the malicious library remains in the specified path and `/etc/ld.so.preload` is not modified.
+
+---
+
+## Detailed Proof of Concept (PoC)
+
+Let’s break down the steps to exploit this technique, including preparation, library creation, injection into `/etc/ld.so.preload`, and execution.
 
 ### Step 1: Understanding the Exploit
-Objective: Gain persistence on a Linux system by injecting a malicious shared library through the /etc/ld.so.preload mechanism.
-Mechanism: The dynamic linker (ld.so) checks the /etc/ld.so.preload file on system startup and loads any libraries listed there before loading the standard libraries. If an attacker can modify this file, they can insert a malicious library that runs arbitrary code when any process starts.
-### Step 2: Creating a Malicious Shared Library
-First, you need to create a custom shared library that will be injected when a process starts. This library can contain malicious code, such as a reverse shell, a keylogger, or other persistent malware.
+
+- **Objective**: Achieve persistence on a Linux system by injecting a malicious shared library using `/etc/ld.so.preload`.
+
+- **Mechanism**: The dynamic linker (`ld.so`) checks `/etc/ld.so.preload` during system startup and loads any libraries listed there. An attacker can modify this file to execute arbitrary code when any process starts.
+
+---
 
 ### Step 2: Creating a Malicious Shared Library
-First, you need to create a custom shared library that will be injected when a process starts. This library can contain malicious code, such as a reverse shell, a keylogger, or other persistent malware.
-Code for a Malicious Shared Library (example: reverse shell):
-```C
+
+First, create a custom shared library that will be injected into processes. This library can contain malicious code, such as a reverse shell, keylogger, or other persistent malware.
+
+#### Code for a Malicious Shared Library (Example: Reverse Shell)
+
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -34,7 +49,6 @@ void _init() {
     // Execute the reverse shell
     system(command);
 }
-```
 
 Steps to compile the malicious shared library:
 
